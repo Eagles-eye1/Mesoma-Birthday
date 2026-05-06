@@ -12,6 +12,8 @@ const gamePrompt = document.querySelector("#gamePrompt");
 const signatureMessage = document.querySelector("#signatureMessage");
 
 const colors = ["#ff6fa7", "#ffd166", "#65dfc2", "#71c7ff", "#a994ff"];
+const birthdayCheer = new Audio("audio/kids-yayy.mp3");
+const birthdaySong = new Audio("audio/happy-birthday-song.mp3");
 const wishes = [
   "You are loved more than you know.",
   "Your smile can light up the whole day.",
@@ -25,6 +27,12 @@ let activeBits = 0;
 let audioContext;
 let sparkleTimer;
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+birthdayCheer.preload = "auto";
+birthdayCheer.volume = 0.9;
+birthdaySong.preload = "auto";
+birthdaySong.volume = 0.72;
+birthdaySong.playbackRate = 0.96;
 
 photo.addEventListener("error", () => {
   const avatar = [
@@ -71,6 +79,7 @@ function runAction(button) {
     wishIndex = nextIndex();
     softBurst(button, 18);
     playSparkleRun();
+    playBirthdaySong();
     return;
   }
 
@@ -128,7 +137,7 @@ momentPhoto.addEventListener("click", () => {
 
 function enterBirthday(button) {
   startAudio();
-  playWelcome();
+  playBirthdayGreeting();
   button.textContent = "Opening...";
   button.disabled = true;
   document.body.classList.remove("landing-active");
@@ -344,6 +353,71 @@ function playSuccess() {
   [523.25, 659.25, 783.99, 987.77, 1318.51].forEach((note, index) => {
     playTone(note, 0.14, index * 0.055, "triangle", 0.045);
   });
+}
+
+function playBirthdayGreeting() {
+  playWelcome();
+  playBirthdayCheer();
+}
+
+function playBirthdayCheer() {
+  birthdayCheer.currentTime = 0;
+
+  const cheerPromise = birthdayCheer.play();
+
+  if (cheerPromise) {
+    cheerPromise.catch(() => {});
+  }
+}
+
+function playBirthdaySong() {
+  birthdaySong.currentTime = 0;
+  const songPromise = birthdaySong.play();
+
+  if (songPromise) {
+    songPromise.catch(() => playHappyBirthdaySong(0));
+  }
+}
+
+function playHappyBirthdaySong(delay = 0) {
+  const beat = 0.3;
+  const melody = [
+    ["G4", 0.75], ["G4", 0.25], ["A4", 1], ["G4", 1], ["C5", 1], ["B4", 2],
+    ["G4", 0.75], ["G4", 0.25], ["A4", 1], ["G4", 1], ["D5", 1], ["C5", 2],
+    ["G4", 0.75], ["G4", 0.25], ["G5", 1], ["E5", 1], ["C5", 1], ["B4", 1], ["A4", 2],
+    ["F5", 0.75], ["F5", 0.25], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 2]
+  ];
+
+  let elapsed = delay;
+
+  melody.forEach(([note, length]) => {
+    const frequency = noteFrequency(note);
+    const duration = Math.max(0.08, beat * length * 0.9);
+
+    playTone(frequency, duration, elapsed, "triangle", 0.038);
+    playTone(frequency / 2, duration, elapsed, "sine", 0.012);
+    elapsed += beat * length;
+  });
+}
+
+function noteFrequency(note) {
+  const match = note.match(/^([A-G])(#?)(\d)$/);
+  if (!match) return 440;
+
+  const [, letter, sharp, octaveText] = match;
+  const semitones = {
+    C: -9,
+    D: -7,
+    E: -5,
+    F: -4,
+    G: -2,
+    A: 0,
+    B: 2
+  };
+  const octave = Number(octaveText);
+  const distanceFromA4 = semitones[letter] + (sharp ? 1 : 0) + (octave - 4) * 12;
+
+  return 440 * 2 ** (distanceFromA4 / 12);
 }
 
 function createPhotoShine(x, y) {
