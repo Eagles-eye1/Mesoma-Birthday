@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Mesoma</title>
+  <link rel="preload" as="image" href="Armani.jpg">
+  <link rel="preload" as="image" href="Mesoma-2.jpg">
+  <link rel="stylesheet" href="style.css">
+  <script src="birthday.js" defer></script>
+</head>
+<body class="landing-active">
+  <section class="landing" aria-labelledby="landingTitle">
+    <div class="landing-sky" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="landing-content">
+      <p class="landing-kicker">A birthday wish is loading...</p>
+      <h1 id="landingTitle">Mesoma's Birthday</h1>
+      <p class="landing-message">Tap to open.</p>
+      <button type="button" data-action="enter">Open the Birthday Surprise</button>
+    </div>
+  </section>
+
+  <main id="birthdayMain" aria-hidden="true">
+    <section class="hero reveal" aria-labelledby="birthdayTitle">
+      <article class="wish-card">
+        <h1 id="birthdayTitle">Happy Birthday Mesoma</h1>
+        <p class="message">You are amazing, smart, brave, and full of joy. Keep shining and smiling always.</p>
+        <button type="button" data-action="surprise">Open your surprise</button>
+        <p id="surprise" class="surprise" aria-live="polite">A bright wish is waiting for you.</p>
+      </article>
+
+      <figure class="photo-stage">
+        <img src="Armani.jpg" alt="Mesoma smiling" class="photo" width="1542" height="2048">
+        <figcaption>Today is your sparkle day.</figcaption>
+      </figure>
+    </section>
+
+    <section class="play-zone reveal" aria-labelledby="playTitle">
+      <h2 id="playTitle">Birthday Buttons</h2>
+      <p>Tap each one as you scroll.</p>
+      <div class="controls">
+        <button type="button" data-action="candles">Light candles</button>
+        <button type="button" data-action="balloons">Fly balloons</button>
+        <button type="button" data-action="stars">Catch stars</button>
+      </div>
+      <p id="playMessage" aria-live="polite">Choose a birthday magic button.</p>
+      <div class="game-board" id="gameBoard" aria-live="polite">
+        <p id="gamePrompt">Play here...</p>
+      </div>
+    </section>
+
+    <section class="memory-lane reveal" aria-labelledby="memoryTitle">
+      <h2 id="memoryTitle">Tiny Wishes</h2>
+      <button type="button" data-action="wish">Pick a wish</button>
+      <p id="tinyWish" aria-live="polite">Big joy. Big cake. Big smiles.</p>
+    </section>
+
+    <section class="photo-moment reveal" aria-labelledby="photoTitle">
+      <figure>
+        <img src="Mesoma-2.jpg" alt="Another joyful photo of Mesoma" class="moment-photo" width="1365" height="2048" loading="lazy">
+        <figcaption id="photoTitle">A little more birthday magic.</figcaption>
+      </figure>
+      <button type="button" data-action="photo">Make the photo sparkle</button>
+    </section>
+
+    <footer class="signature reveal">
+      <button type="button" data-action="signature">Open Uncle Powell's secret note</button>
+      <p id="signatureMessage">from Uncle Powell, I love you.</p>
+    </footer>
+  </main>
+</body>
+</html>
