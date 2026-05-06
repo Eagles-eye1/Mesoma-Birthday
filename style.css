@@ -360,6 +360,15 @@ button:focus-visible {
   font-weight: 800;
 }
 
+.surprise {
+  transition: opacity 520ms ease, transform 520ms ease;
+}
+
+.surprise.is-changing {
+  opacity: 0;
+  transform: translateY(0.35rem);
+}
+
 .play-zone,
 .memory-lane {
   align-content: center;

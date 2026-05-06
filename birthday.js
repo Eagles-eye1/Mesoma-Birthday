@@ -14,6 +14,9 @@ const signatureMessage = document.querySelector("#signatureMessage");
 const colors = ["#ff6fa7", "#ffd166", "#65dfc2", "#71c7ff", "#a994ff"];
 const birthdayCheer = new Audio("audio/kids-yayy.mp3");
 const birthdaySong = new Audio("audio/happy-birthday-song.mp3");
+const birthdaySongStart = 4.2;
+const birthdaySongFadeAt = 35;
+const birthdaySongEnd = 39;
 const wishes = [
   "You are loved more than you know.",
   "Your smile can light up the whole day.",
@@ -26,6 +29,8 @@ let wishIndex = 0;
 let activeBits = 0;
 let audioContext;
 let sparkleTimer;
+let birthdaySongTimer;
+let wishCarouselTimer;
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 birthdayCheer.preload = "auto";
@@ -75,8 +80,6 @@ function runAction(button) {
   }
 
   if (action === "surprise") {
-    surprise.textContent = wishes[wishIndex];
-    wishIndex = nextIndex();
     softBurst(button, 18);
     playSparkleRun();
     playBirthdaySong();
@@ -143,6 +146,7 @@ function enterBirthday(button) {
   document.body.classList.remove("landing-active");
   document.body.classList.add("has-glitter");
   main.removeAttribute("aria-hidden");
+  startWishCarousel();
   softBurst(button, 28);
   makeBalloons(button, 10);
 
@@ -155,6 +159,31 @@ function enterBirthday(button) {
 
 function nextIndex() {
   return (wishIndex + 1) % wishes.length;
+}
+
+function startWishCarousel() {
+  window.clearTimeout(wishCarouselTimer);
+  surprise.classList.remove("is-changing");
+  showWish(wishes[wishIndex]);
+  wishIndex = nextIndex();
+  scheduleNextWish();
+}
+
+function scheduleNextWish() {
+  wishCarouselTimer = window.setTimeout(() => {
+    surprise.classList.add("is-changing");
+
+    window.setTimeout(() => {
+      showWish(wishes[wishIndex]);
+      wishIndex = nextIndex();
+      surprise.classList.remove("is-changing");
+      scheduleNextWish();
+    }, 520);
+  }, 4200);
+}
+
+function showWish(message) {
+  surprise.textContent = message;
 }
 
 function softBurst(source, amount) {
@@ -371,12 +400,29 @@ function playBirthdayCheer() {
 }
 
 function playBirthdaySong() {
-  birthdaySong.currentTime = 0;
+  window.clearInterval(birthdaySongTimer);
+  birthdaySong.pause();
+  birthdaySong.volume = 0.72;
+  birthdaySong.currentTime = birthdaySongStart;
+
   const songPromise = birthdaySong.play();
 
   if (songPromise) {
     songPromise.catch(() => playHappyBirthdaySong(0));
   }
+
+  birthdaySongTimer = window.setInterval(() => {
+    if (birthdaySong.currentTime >= birthdaySongFadeAt) {
+      const fadeProgress = (birthdaySong.currentTime - birthdaySongFadeAt) / (birthdaySongEnd - birthdaySongFadeAt);
+      birthdaySong.volume = Math.max(0, 0.72 * (1 - fadeProgress));
+    }
+
+    if (birthdaySong.currentTime >= birthdaySongEnd) {
+      window.clearInterval(birthdaySongTimer);
+      birthdaySong.pause();
+      birthdaySong.volume = 0.72;
+    }
+  }, 100);
 }
 
 function playHappyBirthdaySong(delay = 0) {
